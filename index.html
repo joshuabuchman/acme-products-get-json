@@ -1,0 +1,81 @@
+<html>
+    <head>
+        <style>
+            body{
+                font-family: verdana;
+            }
+            ul{
+                display: flex
+            }
+            li{
+                list-style: none;
+                background-color: teal;
+                color: white;
+                justify-content: space-around;
+                padding: 1rem;
+                margin: 3rem;
+                flex-wrap: wrap;
+                justify-items: center;
+                border-radius: 1rem;
+            }
+            span{
+                font-weight: bold;
+                font-size: large;
+            }
+        </style>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="https://unpkg.com/react@16/umd/react.production.min.js" crossorigin></script>
+        <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js" crossorigin></script>
+        <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    </head>
+    <body>
+        <div id="root"></div>
+        <script type='text/babel'>
+        const { Component } = React 
+        const { render } = ReactDOM
+        class App extends Component
+        {
+            constructor(){
+                super()
+                this.state = {
+                    products: []
+                }
+            }
+            async componentDidMount()
+            {
+                const products = (await axios.get('/api/products')).data
+                console.log(products);
+                this.setState( { products })
+            }
+            render()
+            {
+                const { products } = this.state
+                return(
+                    <div>
+                        <h1> Acme Express w/ JSON</h1>
+                        <ul>
+                            {
+                                products.map( product =>
+                                {
+                                    return(
+                                        <li>
+                                        <span>{ product.name.slice(0,1).toUpperCase() + product.name.slice(1) }</span>
+                                        <br/>
+                                        { product.description } 
+                                        <br/>
+                                        ${ product.suggestedPrice }.00
+                                        </li>
+                                    )
+                                })
+                            }
+                        </ul>
+                    </div>
+                )
+            }
+        }
+        const root = document.querySelector("#root");
+        ReactDOM.render(<App/>, root)
+        </script>
+        
+    </body>
+</html>
